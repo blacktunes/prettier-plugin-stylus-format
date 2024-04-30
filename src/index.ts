@@ -6,7 +6,6 @@ const defaultStyle = {
   insertSemicolons: false,
   insertBraces: false,
   preserveNewLinesBetweenPropertyValues: true,
-  insertSpaceAfterComment: false,
   selectorSeparator: '\n',
   tabStopChar: '  ',
   sortProperties: 'grouped',
@@ -27,19 +26,15 @@ const stylusFormat: Plugin = {
   ],
   parsers: {
     stylus: {
-      locStart: () => {
-        throw new Error()
-      },
-      locEnd: () => {
-        throw new Error()
-      },
+      locStart: (node) => node.start,
+      locEnd: (node) => node.end,
       parse: (text: string) => ({ text }),
       astFormat: AST_FORMAT
     }
   },
   printers: {
     [AST_FORMAT]: {
-      print: (path, options) => {
+      print: (path) => {
         const ast = path.getValue()
         const stylusCode = StylusSupremacy.format(ast.text, defaultStyle)
         if (ast.text.startsWith('\n')) {
